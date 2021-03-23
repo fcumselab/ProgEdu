@@ -18,8 +18,8 @@ public class MavenUnitTestFailure implements Status {
   public String extractFailureMsg(String consoleText) {
     try {
       String unitTest = "";
-      String startString = "Failed tests:";
-      String endString = "Tests run:";
+      String startString = " T E S T S";
+      String endString = "BUILD FAILURE";
 
       unitTest = consoleText.substring(consoleText.indexOf(startString),
           consoleText.indexOf(endString, consoleText.indexOf(startString)));
@@ -35,20 +35,35 @@ public class MavenUnitTestFailure implements Status {
   @Override
   public ArrayList<FeedBack> formatExamineMsg(String consoleText) {
     String suggest = "https://www.learnjavaonline.org/";
+    String consoleContext = consoleText.substring(0, consoleText.indexOf("Results :"));
+    String consoleResult = consoleText.substring(consoleText.indexOf("Results :"));
     ArrayList<FeedBack> feedbackList = new ArrayList<>();
     try {
       Pattern pattern = Pattern.compile("(.*?)((\\()(.*?)(\\)))(.*?)(\n)");
-      Matcher matcher = pattern.matcher(consoleText);
+      Matcher matcher = pattern.matcher(consoleResult);
       while (matcher.find()) {
-        String message;
-        String fileName = matcher.group(4).replaceAll("\\.", "/");
-        if (matcher.group(6).contains(":")) {
-          message = matcher.group(6).substring(matcher.group(6).indexOf(":") + 1);
+        String target = matcher.group(1).replace("Failed tests:", "").trim();
+        int targetIndex = consoleContext.indexOf(target);
+        int targetEndNextRow = consoleContext.indexOf("\n", consoleContext.indexOf(target));
+        int findAtWord = consoleContext.indexOf("at", targetEndNextRow);
+        String targetContext = consoleContext.substring(targetIndex, findAtWord).trim();
+        String errorMethod = targetContext.substring(0, targetContext.indexOf("("));
+        String fileName = targetContext.substring(
+            targetContext.indexOf("(") + 1, targetContext.indexOf(")"));
+        String errorContext = targetContext.substring(
+            targetContext.indexOf("\n"), targetContext.length()).trim();
+        String symptom;
+        String message = errorMethod;
+        if (errorContext.contains(":")) {
+          symptom = errorContext.substring(0, errorContext.indexOf(":"));
+          message = message + ": "
+              + errorContext.substring(errorContext.indexOf(":") + 1, errorContext.length()).trim();
         } else {
-          message = matcher.group(6);
+          symptom = errorContext;
         }
+        fileName = fileName.replace(".", "/");
         feedbackList.add(new FeedBack(
-              StatusEnum.UNIT_TEST_FAILURE, fileName, "", message.trim(), "", suggest
+              StatusEnum.UNIT_TEST_FAILURE, fileName, "", message, symptom, suggest
           ));
       }
       if (feedbackList.isEmpty()) {

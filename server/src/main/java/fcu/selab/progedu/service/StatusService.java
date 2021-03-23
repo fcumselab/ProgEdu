@@ -57,7 +57,8 @@ public class StatusService {
    */
   public boolean isMavenUnitTestFailure(String console) {
     boolean isUnitTestError = false;
-    if (console.contains("T E S T S") && console.contains("Failed tests")) {
+    if (console.contains("T E S T S")
+        && (console.contains("Failed tests") || console.contains("Tests in error"))) {
       isUnitTestError = true;
     }
     return isUnitTestError;

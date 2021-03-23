@@ -35,23 +35,36 @@ public class MavenUnitTestFailureTest {
 
   @Test
   public void testFormatExamineMsg() {
-    String consoleText = System.getenv("TEST_ONE");
+    String consoleText = System.getenv("TEST");
     MavenUnitTestFailure mavenUnitTestFailure = new MavenUnitTestFailure();
+    String consoleTextOne = "";
+    String consoleTextTwo = "";
     if (consoleText != null && !consoleText.equals("")) {
       System.out.println("Unable to get properties of TEST case from file;" + TEST_FILE);
     }
     if (props != null) {
-      consoleText = props.getProperty("TEST_ONE").trim();
+      consoleTextOne = props.getProperty("TEST_ONE").trim();
+      consoleTextTwo = props.getProperty("TEST_TWO").trim();
     }
-    consoleText = mavenUnitTestFailure.extractFailureMsg(consoleText);
-    ArrayList arrayList = mavenUnitTestFailure.formatExamineMsg(consoleText);
-    ArrayList<FeedBack> testArray = new ArrayList<>();
-    testArray.add(new FeedBack(StatusEnum.UNIT_TEST_FAILURE, "selab/cofitost/java/AppTest", "", "", "", "https://www.learnjavaonline.org/"));
-    testArray.add(new FeedBack(StatusEnum.UNIT_TEST_FAILURE, "selab/cofitost/java/AppTest", "", "", "", "https://www.learnjavaonline.org/"));
-    testArray.add(new FeedBack(StatusEnum.UNIT_TEST_FAILURE, "selab/cofitost/java/ThermometerTest", "", "expected:<10.0> but was:<100.0>", "", "https://www.learnjavaonline.org/"));
-    testArray.add(new FeedBack(StatusEnum.UNIT_TEST_FAILURE, "selab/cofitost/java/ThermometerTest", "", "expected:<1832.0> but was:<212.0>", "", "https://www.learnjavaonline.org/"));
-    String toJson = mavenUnitTestFailure.tojsonArray(arrayList);
-    String testJson = mavenUnitTestFailure.tojsonArray(testArray);
-    Assert.assertEquals(toJson, testJson);
+    consoleTextOne = mavenUnitTestFailure.extractFailureMsg(consoleTextOne);
+    ArrayList arrayListOne = mavenUnitTestFailure.formatExamineMsg(consoleTextOne);
+    ArrayList<FeedBack> testArrayOne = new ArrayList<>();
+    testArrayOne.add(new FeedBack(StatusEnum.UNIT_TEST_FAILURE, "selab/cofitost/java/AppTest", "", "shouldAnswerWithTrue", "java.lang.AssertionError", "https://www.learnjavaonline.org/"));
+    testArrayOne.add(new FeedBack(StatusEnum.UNIT_TEST_FAILURE, "selab/cofitost/java/AppTest", "", "shouldAnswerWithTrue2", "java.lang.AssertionError", "https://www.learnjavaonline.org/"));
+    testArrayOne.add(new FeedBack(StatusEnum.UNIT_TEST_FAILURE, "selab/cofitost/java/ThermometerTest", "", "testFahrenheit: expected:<10.0> but was:<100.0>", "java.lang.AssertionError", "https://www.learnjavaonline.org/"));
+    testArrayOne.add(new FeedBack(StatusEnum.UNIT_TEST_FAILURE, "selab/cofitost/java/ThermometerTest", "", "testCelsius: expected:<1832.0> but was:<212.0>", "java.lang.AssertionError", "https://www.learnjavaonline.org/"));
+    String toJsonOne = mavenUnitTestFailure.tojsonArray(arrayListOne);
+    String testJsonOne = mavenUnitTestFailure.tojsonArray(testArrayOne);
+    Assert.assertEquals(toJsonOne, testJsonOne);
+
+    consoleTextTwo = mavenUnitTestFailure.extractFailureMsg(consoleTextTwo);
+    ArrayList arrayListTwo = mavenUnitTestFailure.formatExamineMsg(consoleTextTwo);
+    ArrayList<FeedBack> testArrayTwo = new ArrayList<>();
+    testArrayTwo.add(new FeedBack(StatusEnum.UNIT_TEST_FAILURE, "fcu/iecs/q2/Q2Test", "", "testAccountCreate: the length of account array is wrong.", "java.lang.AssertionError", "https://www.learnjavaonline.org/"));
+    testArrayTwo.add(new FeedBack(StatusEnum.UNIT_TEST_FAILURE, "selab/myapp/AppTest", "", "testAppTest: expected:<Hello every[]one,\nI am studying a...> but was:<Hello every[ ]one,\nI am studying a...>", "org.junit.ComparisonFailure", "https://www.learnjavaonline.org/"));
+    testArrayTwo.add(new FeedBack(StatusEnum.UNIT_TEST_FAILURE, "fcu/iecs/q2/Q2Test", "", "testWithdrawAndDeposite", "java.lang.NullPointerException", "https://www.learnjavaonline.org/"));
+    String toJsonTwo = mavenUnitTestFailure.tojsonArray(arrayListTwo);
+    String testJsonTwo = mavenUnitTestFailure.tojsonArray(testArrayTwo);
+    Assert.assertEquals(toJsonTwo, testJsonTwo);
   }
 }
