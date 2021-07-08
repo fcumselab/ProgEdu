@@ -106,7 +106,7 @@ public class GroupProjectService {
 
       CourseConfig courseConfig = CourseConfig.getInstance();
       String progEduApiUrl = courseConfig.getTomcatServerIp() + courseConfig.getBaseuri()
-              + "/webapi/groups";
+              + "/publicApi/groups";
       String updateDbUrl = progEduApiUrl + "/commits/update";
       String projectUrl = gitlabConfig.getGitlabHostUrl() + "/" + groupName + "/" + projectName
               + ".git";

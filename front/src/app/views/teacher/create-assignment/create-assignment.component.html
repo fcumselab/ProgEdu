@@ -156,7 +156,7 @@
                 <div class="form-group row">
                   <div class="col-md-3">Assignment Assessment</div>
                   <div class="col-md-3">Status :</div>
-                  <div class="col-md-2">Order & Score :</div>          
+                  <div class="col-md-2">Order & Score :</div>      
                 </div>
                 <div class="form-group row">
                   <div class="col-md-3"></div>
@@ -168,14 +168,14 @@
                   <div class="col-md-2">
                     <li class="list-group-item sortable" draggable="false" style="cursor: not-allowed; 
                         background-color: white;">1.&nbsp;Compile Failure
-                        <select class="form-control" (change)="selectChangeHandler('Compile Failure', $event)">
-                          <option *ngFor="let op of getScoreOptions('Compile Failure')" value="{{ op }}">{{ op }}%</option>
+                        <select class="form-control" (change)="selectChangeHandler('maven', 'Compile Failure', $event)">
+                          <option *ngFor="let op of getScoreOptions(javaOrder, javaStatusScore, 'Compile Failure')" value="{{ op }}">{{ op }}%</option>
                         </select>
                     </li>
-                    <ul class="list-group sortable" [sortablejs]="order" [sortablejsOptions]="normalOptions">
-                      <li class="list-group-item" *ngFor="let item of order; let i = index;">{{ i+2 }}. {{ item }}
-                        <select class="form-control" (change)="selectChangeHandler(item, $event)">
-                          <option *ngFor="let op of getScoreOptions(item)" value="{{ op }}">{{ op }}%</option>
+                    <ul class="list-group sortable" [sortablejs]="javaOrder" [sortablejsOptions]="normalOptions">
+                      <li class="list-group-item" *ngFor="let item of javaOrder; let i = index;">{{ i+2 }}. {{ item }}
+                        <select class="form-control" (change)="selectChangeHandler('maven', item, $event)">
+                          <option *ngFor="let op of getScoreOptions(javaOrder, javaStatusScore, item)" value="{{ op }}">{{ op }}%</option>
                         </select>
                       </li>
                     </ul>
@@ -195,7 +195,7 @@
                           download>JavacQuickStart.zip</a>
                       </li>
                       <li role="menuitem">
-                        <a class="dropdown-item" (click)="confirm()" style="cursor: pointer;"
+                        <a class="dropdown-item" (click)="confirm(javaOrder)" style="cursor: pointer;"
                           download>MvnQuickStart.zip</a>
                       </li>
                     </ul>
@@ -215,7 +215,7 @@
               <div class="form-group row">
                 <label class="col-md-3 col-form-label">Android File</label>
                 <div class="col-md-9">
-                  <div class="btn-group" dropdown [isOpen]="webTabStatus.isOpen" placement="top">
+                  <div class="btn-group" dropdown [isOpen]="androidTabStatus.isOpen" placement="top">
                     <button dropdownToggle type="button" class="btn btn-primary dropdown-toggle">
                       <i class="icon-cloud-download"></i><span class="caret"> template</span>
                     </button>
@@ -238,15 +238,37 @@
             <!---- Web ---->
             <tab heading="Web" (click)="selectedAssignmentType('Web')">
               <div class="form-group row">
+                <div class="col-md-3">Assignment Assessment</div>
+                <div class="col-md-3">Status :</div>
+                <div class="col-md-2">Order & Score :</div>       
+              </div>
+              <div class="form-group row">
+                <div class="col-md-3"></div>
+                <div class="col-md-3">
+                  <ul class="list-group sortable" [sortablejs]="webStatus" [sortablejsOptions]="normalOptions">
+                    <li class="list-group-item" *ngFor="let item of webStatus">{{ item }}</li>
+                  </ul>
+                </div>
+                <div class="col-md-2">
+                  <ul class="list-group sortable" [sortablejs]="webOrder" [sortablejsOptions]="normalOptions">
+                    <li class="list-group-item" *ngFor="let item of webOrder; let i = index;">{{ i+1 }}. {{ item }}
+                      <select class="form-control" (change)="selectChangeHandler('web', item, $event)">
+                        <option *ngFor="let op of getScoreOptions(webOrder, webStatusScore, item)" value="{{ op }}">{{ op }}%</option>
+                      </select>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+              <div class="form-group row">
                 <label class="col-md-3 col-form-label">Web File</label>
                 <div class="col-md-9">
-                  <div class="btn-group" dropdown [isOpen]="androidTabStatus.isOpen" placement="top">
+                  <div class="btn-group" dropdown [isOpen]="webTabStatus.isOpen" placement="top">
                     <button dropdownToggle type="button" class="btn btn-primary dropdown-toggle">
                       <i class="icon-cloud-download"></i><span class="caret"> template</span>
                     </button>
                     <ul *dropdownMenu class="dropdown-menu" role="menu">
                       <li role="menuitem"><a class="dropdown-item" href="{{SERVER_URL}}/resources/WebQuickStart.zip"
-                          download>WebQuickStart.zip</a>
+                        download>WebQuickStart.zip</a>
                       </li>
                     </ul>
                   </div>

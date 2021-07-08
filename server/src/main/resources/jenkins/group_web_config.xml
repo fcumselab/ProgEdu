@@ -84,7 +84,7 @@
             <caseSensitive>true</caseSensitive>
         </hudson.tasks.ArtifactArchiver>
         <org.jenkinsci.plugins.UpdatingDbPublisher plugin="jenkins-progedu@1.0-SNAPSHOT">
-            <progeduDbUrl>http://140.134.26.71:10008/ProgEdu/webapi/commits/update</progeduDbUrl>
+            <progeduDbUrl>http://140.134.26.71:10008/ProgEdu/publicApi/commits/update</progeduDbUrl>
             <user>M1234567</user>
             <proName>WEB-HW999</proName>
         </org.jenkinsci.plugins.UpdatingDbPublisher>

@@ -1,0 +1,51 @@
+pipeline {
+    agent any
+    stages {
+        stage('pull environment') {
+            agent any
+            steps {
+                sh 'docker pull yhwang8943/android-build:latest'
+            }
+        }
+        stage('get source') {
+            agent {
+                docker { image 'yhwang8943/android-build:latest' }
+
+            }
+            steps {
+                git branch: 'master',
+                credentialsId: 'gitlab_root',
+                url: '{GitLab-url}'
+
+                sh 'chmod +x gradlew'
+            }
+        }
+        stage('lint') {
+            agent {
+                docker { image 'yhwang8943/android-build:latest' }
+            }
+            steps {
+                sh './gradlew lint'
+            }
+        }
+        stage('checkstyle') {
+            agent {
+                docker { image 'yhwang8943/android-build:latest' }
+            }
+            steps {
+                sh './gradlew checkstyle'
+            }
+        }
+    }
+
+    post {
+
+        always {
+            sh "curl --location --request POST '{ProgEdu-server-updateDbUrl}' \
+                             --header 'Content-Type: application/x-www-form-urlencoded' \
+                             --data-urlencode 'user={ProgEdu-user-name}' \
+                             --data-urlencode 'proName={ProgEdu-project-name}'"
+            cleanWs()
+        }
+    }
+}
