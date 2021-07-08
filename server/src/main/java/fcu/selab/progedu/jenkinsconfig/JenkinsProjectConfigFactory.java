@@ -27,7 +27,7 @@ public class JenkinsProjectConfigFactory {
 //        return new WebConfig(projectUrl, updateDbUrl,
 //                username, assignmentName);
       case ANDROID:
-        return new AndroidConfig(projectUrl, updateDbUrl,
+        return new AndroidPipelineConfig(projectUrl, updateDbUrl,
                 username, assignmentName);
       default:
         return null;
