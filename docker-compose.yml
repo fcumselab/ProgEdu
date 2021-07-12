@@ -81,12 +81,15 @@ services:
 
     depends_on:
       - docker
+      - android-build
     volumes:
       - jenkins_home:/var/jenkins_home
       - jenkins_home-workspace:/var/jenkins_home/workspace
       - jenkins-docker-certs:/certs/client:ro
       # - /dev/kvm:/dev/kvm // for android, but now it not need
-    
+  
+  android-build:
+    image: yhwang8943/android-build:latest
   
   docker:
     image: docker:dind
