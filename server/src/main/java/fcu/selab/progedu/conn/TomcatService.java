@@ -130,4 +130,26 @@ public class TomcatService {
     return date;
 
   }
+
+  /**
+   * (to do)
+   *
+   * @return target (to do)
+   */
+  public String storeMvnFileToServer() {
+
+    String fileName = "MvnQuickStart.zip";
+    String filePath = this.getClass().getResource("/sample/" + fileName).getFile();
+    File sample = new File(filePath);
+    InputStream file;
+    try {
+      file = new FileInputStream(sample);
+      return storeFileToUploadsFolder(file, fileName);
+    } catch (FileNotFoundException e) {
+      LOGGER.debug(ExceptionUtil.getErrorInfoFromException(e));
+      LOGGER.error(e.getMessage());
+    }
+
+    return "";
+  }
 }

@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 
 import fcu.selab.progedu.jenkinsconfig.JenkinsProjectConfig;
+import fcu.selab.progedu.jenkinsconfig.MavenGroupConfig;
 import fcu.selab.progedu.jenkinsconfig.WebGroupConfig;
 import fcu.selab.progedu.utils.JavaIoUtile;
 import org.gitlab.api.models.GitlabProject;
@@ -57,9 +58,10 @@ public class GroupProjectService {
    * @param projectName project name
    * @param projectType projectType
    */
+  @SuppressWarnings("checkstyle:LineLength")
   public void createGroupProjectV2(String groupName, String projectName, String projectType) {
 
-    if (!projectType.equals("web")) {
+    if (!projectType.equals("web") && !projectType.equals("maven")) {
       LOGGER.error("The createGroupProjectV2 not support" + projectType);
       return;
     }
@@ -81,7 +83,17 @@ public class GroupProjectService {
     JavaIoUtile.createUtf8FileFromString(readMe, new File(cloneDirectoryPath, "README.md"));
 
     // 4 create template
-    String filePath = tomcatService.storeWebFileToServer();
+    String filePath;
+    switch (projectType) {
+      case "web":
+        filePath = tomcatService.storeWebFileToServer();
+        break;
+      case "maven":
+        filePath = tomcatService.storeMvnFileToServer();
+        break;
+      default:
+        throw new IllegalStateException("Unexpected value: " + projectType);
+    }
     zipHandler.unzipFile(filePath, cloneDirectoryPath);
 
     // 5. Add .gitkeep if folder is empty.
@@ -111,9 +123,21 @@ public class GroupProjectService {
       String projectUrl = gitlabConfig.getGitlabHostUrl() + "/" + groupName + "/" + projectName
               + ".git";
 
-      JenkinsProjectConfig jenkinsProjectConfig = new WebGroupConfig(projectUrl, updateDbUrl,
-                                                                     groupName, projectName);
-
+      JenkinsProjectConfig jenkinsProjectConfig;
+      
+      switch (projectType) {
+        case "web":
+          jenkinsProjectConfig = new WebGroupConfig(projectUrl, updateDbUrl,
+              groupName, projectName);
+          break;
+        case "maven":
+          jenkinsProjectConfig = new MavenGroupConfig(projectUrl, updateDbUrl,
+              groupName, projectName);
+          break;
+        default:
+          throw new IllegalStateException("Unexpected value: " + projectType);
+      }
+      
       JenkinsService jenkinsService = JenkinsService.getInstance();
 
       jenkinsService.createJobV2(jobName, jenkinsProjectConfig.getXmlConfig());
